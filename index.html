@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="description" content="ZenPop - A beautiful, mind-relaxing bubble popping game. Pop colorful bubbles, create combos, and find your zen. Play free on any device!">
+  <meta name="theme-color" content="#0a0a1a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>ZenPop ✨ | Mind Relaxing Bubble Game</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Particle Canvas Overlay -->
+  <canvas id="particleCanvas"></canvas>
+
+  <!-- Animated Background Stars -->
+  <div id="bgStars"></div>
+
+  <!-- ========== SPLASH SCREEN ========== -->
+  <div id="splashScreen" class="screen active">
+    <div class="splash-content">
+      <div class="splash-logo">
+        <div class="splash-bubble b1"></div>
+        <div class="splash-bubble b2"></div>
+        <div class="splash-bubble b3"></div>
+        <div class="splash-bubble b4"></div>
+        <div class="splash-bubble b5"></div>
+      </div>
+      <h1 class="splash-title">ZenPop</h1>
+      <p class="splash-tagline">Find Your Zen ✨</p>
+      <div class="loading-bar">
+        <div class="loading-fill"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== MENU SCREEN ========== -->
+  <div id="menuScreen" class="screen">
+    <div class="menu-content">
+      <div class="menu-header">
+        <h1 class="game-title">
+          <span class="title-zen">Zen</span><span class="title-pop">Pop</span>
+          <span class="title-sparkle">✨</span>
+        </h1>
+        <p class="game-subtitle">Tap • Pop • Relax</p>
+      </div>
+
+      <div class="menu-modes">
+        <button class="mode-card" data-mode="zen" id="btnZenMode">
+          <div class="mode-icon">🧘</div>
+          <div class="mode-info">
+            <h3>Zen Mode</h3>
+            <p>No pressure. Just pop.</p>
+          </div>
+          <div class="mode-badge">Relaxing</div>
+        </button>
+
+        <button class="mode-card" data-mode="blitz" id="btnBlitzMode">
+          <div class="mode-icon">⚡</div>
+          <div class="mode-info">
+            <h3>Blitz Mode</h3>
+            <p>90 seconds. Max score!</p>
+          </div>
+          <div class="mode-badge">Challenge</div>
+        </button>
+
+        <button class="mode-card" data-mode="puzzle" id="btnPuzzleMode">
+          <div class="mode-icon">🧩</div>
+          <div class="mode-info">
+            <h3>Puzzle Mode</h3>
+            <p>Clear the board wisely.</p>
+          </div>
+          <div class="mode-badge">Strategic</div>
+        </button>
+      </div>
+
+      <div class="menu-bottom">
+        <button class="icon-btn" id="btnSettings" aria-label="Settings">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+        </button>
+        <button class="icon-btn" id="btnHighScores" aria-label="High Scores">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        </button>
+        <button class="icon-btn" id="btnHowToPlay" aria-label="How to Play">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3M12 17h.01"/></svg>
+        </button>
+      </div>
+
+      <!-- Amazon Affiliate Banner -->
+      <a href="https://www.amazon.com/customer-preferences/edit?ie=UTF8&preferencesReturnUrl=%2F&linkCode=ll2&tag=sandeep02-20&linkId=b0a2a2d191aeb39d997c93412de4fe7a&language=en_US&ref_=as_li_ss_tl" target="_blank" rel="noopener noreferrer" class="amazon-banner" id="menuAmazonBanner">
+        <div class="amazon-banner-icon">🎁</div>
+        <div class="amazon-banner-text">
+          <span class="amazon-banner-title">Exclusive Deals</span>
+          <span class="amazon-banner-sub">Shop Top Picks on Amazon</span>
+        </div>
+        <div class="amazon-banner-arrow">→</div>
+      </a>
+
+      <div class="best-score-display" id="menuBestScore">
+        <span class="best-label">Best Score</span>
+        <span class="best-value" id="menuBestValue">0</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== GAME SCREEN ========== -->
+  <div id="gameScreen" class="screen">
+    <!-- Top Bar -->
+    <div class="game-top-bar">
+      <button class="icon-btn small" id="btnPause" aria-label="Pause">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+      </button>
+      <div class="score-display">
+        <div class="score-label">SCORE</div>
+        <div class="score-value" id="scoreValue">0</div>
+      </div>
+      <div class="mode-indicator" id="modeIndicator">ZEN</div>
+    </div>
+
+    <!-- Timer Bar (Blitz mode) -->
+    <div class="timer-bar" id="timerBar">
+      <div class="timer-fill" id="timerFill"></div>
+      <span class="timer-text" id="timerText">90</span>
+    </div>
+
+    <!-- Moves Counter (Puzzle mode) -->
+    <div class="moves-display" id="movesDisplay">
+      <span class="moves-label">Moves</span>
+      <span class="moves-value" id="movesValue">30</span>
+    </div>
+
+    <!-- Combo Indicator -->
+    <div class="combo-indicator" id="comboIndicator">
+      <span class="combo-text">COMBO</span>
+      <span class="combo-value" id="comboValue">x2</span>
+    </div>
+
+    <!-- Game Grid -->
+    <div class="grid-container">
+      <div class="game-grid" id="gameGrid"></div>
+    </div>
+
+    <!-- Score Popup Container -->
+    <div id="scorePopups"></div>
+  </div>
+
+  <!-- ========== PAUSE OVERLAY ========== -->
+  <div id="pauseOverlay" class="overlay">
+    <div class="overlay-panel glass-panel">
+      <h2>Paused</h2>
+      <div class="pause-score">
+        <span>Score:</span>
+        <span id="pauseScore">0</span>
+      </div>
+      <button class="btn btn-primary" id="btnResume">Resume</button>
+      <button class="btn btn-secondary" id="btnQuitToMenu">Quit to Menu</button>
+
+      <!-- Amazon Affiliate - Pause -->
+      <a href="https://www.amazon.com/customer-preferences/edit?ie=UTF8&preferencesReturnUrl=%2F&linkCode=ll2&tag=sandeep02-20&linkId=b0a2a2d191aeb39d997c93412de4fe7a&language=en_US&ref_=as_li_ss_tl" target="_blank" rel="noopener noreferrer" class="amazon-pause-link" id="pauseAmazon">
+        🛍️ Check Hot Deals on Amazon
+      </a>
+    </div>
+  </div>
+
+  <!-- ========== GAME OVER SCREEN ========== -->
+  <div id="gameOverOverlay" class="overlay">
+    <div class="overlay-panel glass-panel gameover-panel">
+      <div class="gameover-emoji" id="gameOverEmoji">🎉</div>
+      <h2 class="gameover-title" id="gameOverTitle">Amazing!</h2>
+      <div class="gameover-score">
+        <div class="final-score">
+          <span class="fs-label">Score</span>
+          <span class="fs-value" id="finalScore">0</span>
+        </div>
+        <div class="final-best">
+          <span class="fs-label">Best</span>
+          <span class="fs-value" id="finalBest">0</span>
+        </div>
+      </div>
+      <div class="new-best-badge" id="newBestBadge">🏆 New Best!</div>
+      <div class="gameover-stats">
+        <div class="stat">
+          <span class="stat-value" id="statBubbles">0</span>
+          <span class="stat-label">Bubbles Popped</span>
+        </div>
+        <div class="stat">
+          <span class="stat-value" id="statMaxCombo">0</span>
+          <span class="stat-label">Max Combo</span>
+        </div>
+        <div class="stat">
+          <span class="stat-value" id="statBiggest">0</span>
+          <span class="stat-label">Biggest Pop</span>
+        </div>
+      </div>
+      <div class="gameover-buttons">
+        <button class="btn btn-primary" id="btnPlayAgain">Play Again</button>
+        <button class="btn btn-accent" id="btnShare">Share Score 📤</button>
+        <button class="btn btn-secondary" id="btnBackToMenu">Menu</button>
+      </div>
+
+      <!-- Amazon Affiliate - Game Over -->
+      <a href="https://www.amazon.com/customer-preferences/edit?ie=UTF8&preferencesReturnUrl=%2F&linkCode=ll2&tag=sandeep02-20&linkId=b0a2a2d191aeb39d997c93412de4fe7a&language=en_US&ref_=as_li_ss_tl" target="_blank" rel="noopener noreferrer" class="amazon-reward-card" id="gameOverAmazon">
+        <div class="amazon-reward-glow"></div>
+        <div class="amazon-reward-content">
+          <span class="amazon-reward-emoji">🏆</span>
+          <div class="amazon-reward-info">
+            <span class="amazon-reward-title">Claim Your Reward!</span>
+            <span class="amazon-reward-sub">Discover trending deals on Amazon →</span>
+          </div>
+        </div>
+      </a>
+    </div>
+  </div>
+
+  <!-- ========== SETTINGS OVERLAY ========== -->
+  <div id="settingsOverlay" class="overlay">
+    <div class="overlay-panel glass-panel">
+      <h2>Settings</h2>
+      <div class="settings-list">
+        <div class="setting-item">
+          <span>Sound Effects</span>
+          <label class="toggle">
+            <input type="checkbox" id="toggleSound" checked>
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+        <div class="setting-item">
+          <span>Vibration</span>
+          <label class="toggle">
+            <input type="checkbox" id="toggleVibration" checked>
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+        <div class="setting-item">
+          <span>Background Music</span>
+          <label class="toggle">
+            <input type="checkbox" id="toggleMusic">
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+      </div>
+      <button class="btn btn-primary" id="btnCloseSettings">Done</button>
+    </div>
+  </div>
+
+  <!-- ========== HIGH SCORES OVERLAY ========== -->
+  <div id="highScoresOverlay" class="overlay">
+    <div class="overlay-panel glass-panel">
+      <h2>🏆 High Scores</h2>
+      <div class="scores-tabs">
+        <button class="score-tab active" data-tab="zen">Zen</button>
+        <button class="score-tab" data-tab="blitz">Blitz</button>
+        <button class="score-tab" data-tab="puzzle">Puzzle</button>
+      </div>
+      <div class="scores-list" id="scoresList"></div>
+      <button class="btn btn-primary" id="btnCloseScores">Close</button>
+    </div>
+  </div>
+
+  <!-- ========== HOW TO PLAY OVERLAY ========== -->
+  <div id="howToPlayOverlay" class="overlay">
+    <div class="overlay-panel glass-panel">
+      <h2>How to Play</h2>
+      <div class="tutorial-steps">
+        <div class="tutorial-step">
+          <div class="step-icon">👆</div>
+          <div class="step-text">
+            <h4>Tap Bubbles</h4>
+            <p>Tap a group of 2 or more same-colored bubbles to pop them!</p>
+          </div>
+        </div>
+        <div class="tutorial-step">
+          <div class="step-icon">⬇️</div>
+          <div class="step-text">
+            <h4>Watch Them Fall</h4>
+            <p>After popping, remaining bubbles fall down and new ones appear.</p>
+          </div>
+        </div>
+        <div class="tutorial-step">
+          <div class="step-icon">🔥</div>
+          <div class="step-text">
+            <h4>Build Combos</h4>
+            <p>Pop quickly to build combo multipliers for massive scores!</p>
+          </div>
+        </div>
+        <div class="tutorial-step">
+          <div class="step-icon">🎯</div>
+          <div class="step-text">
+            <h4>Bigger is Better</h4>
+            <p>Larger groups give exponentially more points. Plan your pops!</p>
+          </div>
+        </div>
+      </div>
+      <button class="btn btn-primary" id="btnCloseTutorial">Got It!</button>
+    </div>
+  </div>
+
+  <script src="game.js"></script>
+</body>
+</html>
